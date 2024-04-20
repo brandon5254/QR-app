@@ -1,17 +1,48 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header [style.visibility]="content_visibility">
+  <ion-toolbar color="primary">
     <ion-title>
-      Tab 1
+      QR & CODIGO DE BARRAS
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [style.visibility]="content_visibility">
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-card class="ion-text-center">
+    <ion-card-header>
+      QR
+    </ion-card-header>
+    <ion-card-content>
+      <qrcode 
+        [qrdata]="qrString" 
+        [width]="256" 
+        [errorCorrectionLevel]="'M'">
+      </qrcode>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- <ion-item *ngIf="scannedResult">
+    <ion-label class="ion-text-wrap">QR Code Scanned Result: {{scannedResult}}</ion-label>
+  </ion-item> -->
+
+  <ion-card class="ion-text-center">
+    <ion-card-header>
+      Bar Code
+    </ion-card-header>
+    <ion-card-content>
+      <img id="barcode"/>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-item *ngIf="scannedResult">
+    <ion-label class="ion-text-wrap">Resultado Escaneado: {{scannedResult}}</ion-label>
+  </ion-item>
+
+  <ion-button 
+    expand="block" 
+    class="ion-margin" 
+    (click)="startScan()">
+    Escanear
+  </ion-button>
+  
 </ion-content>
