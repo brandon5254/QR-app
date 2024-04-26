@@ -1,39 +1,30 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
-import * as JsBarcode from 'jsbarcode';
-
+import { Storage } from '@ionic/storage-angular';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page implements OnInit, OnDestroy{
- 
+export class Tab1Page implements OnInit, OnDestroy {
+
   qrString = 'Esto es un mensaje oculto';
   barCodeString = '12345566765';
   scannedResult: any;
   content_visibility = '';
 
-  constructor(
-    ) {}
+  constructor(private storage: Storage) {}
 
-  ngOnInit(): void {
-    JsBarcode("#barcode", this.barCodeString, {
-      // format: "pharmacode",
-      lineColor: "#0aa",
-      width:4,
-      height:200,
-      displayValue: false
-    });
+  async ngOnInit() {
+    await this.storage.create();
   }
 
   async checkPermission() {
     try {
-      // check or request permission
       const status = await BarcodeScanner.checkPermission({ force: true });
       if (status.granted) {
-        // the user granted permission
         return true;
       }
       return false;
@@ -46,7 +37,7 @@ export class Tab1Page implements OnInit, OnDestroy{
   async startScan() {
     try {
       const permission = await this.checkPermission();
-      if(!permission) {
+      if (!permission) {
         return;
       }
       await BarcodeScanner.hideBackground();
@@ -54,18 +45,46 @@ export class Tab1Page implements OnInit, OnDestroy{
       document.querySelector('body')?.classList.add('scanner-active');
       this.content_visibility = 'hidden';
       const result = await BarcodeScanner.startScan();
-      console.log(result);
+      
       BarcodeScanner.showBackground();
       document.querySelector('body')?.classList.remove('scanner-active');
       this.content_visibility = '';
-      if(result?.hasContent) {
+
+      if (result?.hasContent) {
         this.scannedResult = result.content;
-        console.log(this.scannedResult);
+        const date = new Date();
+        const location = await Geolocation.getCurrentPosition();
+  
+        // Obtener la matriz de escaneos del Local Storage o inicializarla si no existe
+        let scanHistory = await this.storage.get('scanHistory') || [];
+  
+        // Agregar el nuevo escaneo a la matriz
+        const scanInfo = {
+          data: result.content,
+          date: date.toLocaleDateString(),
+          time: date.toLocaleTimeString(),
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude
+        };
+        scanHistory.push(scanInfo);
+  
+        // Guardar la matriz actualizada en el Local Storage
+        await this.storage.set('scanHistory', scanHistory);
+        
+        // Actualizar la lista de escaneos en Tab2
+        this.updateScanResults();
       }
     } catch(e) {
       console.log(e);
       this.stopScan();
     }
+  }
+
+  async updateScanResults() {
+    // Obtener la matriz de escaneos actualizada del Local Storage
+    let scanHistory = await this.storage.get('scanHistory');
+    console.log(scanHistory); // Solo para verificar en la consola
+  
   }
 
   stopScan() {
@@ -76,6 +95,6 @@ export class Tab1Page implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-      this.stopScan();
+    this.stopScan();
   }
 }

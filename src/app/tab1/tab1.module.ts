@@ -7,6 +7,8 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { Tab1PageRoutingModule } from './tab1-routing.module';
 import { QRCodeModule } from 'angularx-qrcode';
+import { StorageService } from 'src/services/storage.service';
+
 
 @NgModule({
   imports: [
@@ -17,6 +19,7 @@ import { QRCodeModule } from 'angularx-qrcode';
     Tab1PageRoutingModule,
     QRCodeModule
   ],
-  declarations: [Tab1Page]
+  declarations: [Tab1Page],
+  providers: [StorageService]  // Añade el servicio aquí
 })
 export class Tab1PageModule {}
