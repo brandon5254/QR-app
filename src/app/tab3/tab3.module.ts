@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tab3Page } from './tab3.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import {GoogleMapsModule} from '@angular/google-maps';
 
 import { Tab3PageRoutingModule } from './tab3-routing.module';
 
@@ -11,6 +12,7 @@ import { Tab3PageRoutingModule } from './tab3-routing.module';
   imports: [
     IonicModule,
     CommonModule,
+    GoogleMapsModule,
     FormsModule,
     ExploreContainerComponentModule,
     Tab3PageRoutingModule

@@ -1,17 +1,15 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
-      Tab 3
+      Mapa de Marcadores
     </ion-title>
   </ion-toolbar>
+  <select *ngIf="markers.length > 0" (change)="filterMarkers($event)">
+    <option value="todos">Todos</option>
+    <option *ngFor="let option of filterOptions" [value]="option">{{ option }}</option>
+</select>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <div id="mapId3" style="width: 100%; height: 100%"></div>
 </ion-content>
